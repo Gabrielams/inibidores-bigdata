@@ -12,14 +12,13 @@ import org.apache.spark.sql.streaming.Trigger
 import scala.concurrent.duration._
 import java.sql.Timestamp
 
-class PrecipitacaoSaisInibidores {
+object PrecipitacaoSaisInibidores {
 
-  def main(args: Array[String]) {
+def main(args: Array[String]) {
     if (args.length < 1) {
-      System.err.println("Usage: PrecipitacaoSaisInibidores")
+      System.err.println("Usage: PrecipitacaoSaisInibidores diretorio")
       System.exit(1)
     }
-
 
     val diretorio: String = args(0)
 
@@ -49,27 +48,129 @@ class PrecipitacaoSaisInibidores {
     val atividades = leituras
       .select($"data", $"time", $"contagem", $"media", $"inibidor")
       .as[RealTime]
+    
+    val filtroMaior1K = atividades.filter($"contagem" > "1000.00" && $"contagem" < "2000.00").withColumnRenamed("value", "contagem")
+    filtroMaior1K.sort($"contagem")
+    
+/*    val cont = filtroMaior1K.groupBy("contagem")
+    	.count
+    	.sort($"contagem".desc)
+    	.withColumnRenamed("count","contador")*/
+    
+    val filtroMaior2K = atividades.filter($"contagem" > "2000.00" && $"contagem" < "3000.00" ).withColumnRenamed("value", "contagem")
+    filtroMaior2K.sort($"contagem")
+    
+    val filtroMaior3K = atividades.filter($"contagem" > "3000.00" && $"contagem" < "4000.00" ).withColumnRenamed("value", "contagem")
+    filtroMaior3K.sort($"contagem")
 
-    val filtroQtd = atividades.filter($"contagem" < "1000.00").withColumnRenamed("value", "contagem")
+    
+    val filtroMaior4K = atividades.filter($"contagem" > "4000.00" && $"contagem" < "5000.00" ).withColumnRenamed("value", "contagem")
+    filtroMaior4K.sort($"contagem")
+
+    
+    val filtroMaior5K = atividades.filter($"contagem" > "5000.00" && $"contagem" < "6000.00" ).withColumnRenamed("value", "contagem")  
+    filtroMaior5K.sort($"contagem")
+
+    val filtroMaior6K = atividades.filter($"contagem" > "6000.00" && $"contagem" < "7000.00" ).withColumnRenamed("value", "contagem")
+    filtroMaior6K.sort($"contagem")  
+    
+    
+    val filtroMaior7K = atividades.filter($"contagem" > "7000.00" && $"contagem" < "8000.00" ).withColumnRenamed("value", "contagem")
+    filtroMaior7K.sort($"contagem")
+
+    
+    val filtroMaior8K = atividades.filter($"contagem" > "8000.00" && $"contagem" < "9000.00").withColumnRenamed("value", "contagem")
+    filtroMaior8K.sort($"contagem")
+
+    
+    val filtroMaior10K = atividades.filter($"contagem" > "10000.00").withColumnRenamed("value", "contagem")
+    filtroMaior10K.sort($"contagem")
 
     System.out.println("antes do WS")
 
-    val query = filtroQtd.writeStream
+    val query = filtroMaior1K.writeStream
       .outputMode(Append)
       //.outputMode(Update) // Não pode ser usado com orderBy()
       .format("csv")
       .trigger(Trigger.ProcessingTime(2.seconds))
-      .option("path", "/Bigdata/saida_arquivo/")
-      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv_Ex00_PrecipitacaoDeSais")
+      .option("path", "/Bigdata/saida_arquivo/01")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_01")
       .start()
+      
+    val query2 = filtroMaior2K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/02")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_02")
+      .start()
+      
+    val query3 = filtroMaior3K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/03")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_03")
+      .start()      
 
+    val query4 = filtroMaior4K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/04")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_04")
+      .start()
+      
+    val query5 = filtroMaior5K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/05")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_05")
+      .start()
+      
+    val query6 = filtroMaior6K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/06")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_06")
+      .start() 
+      
+    val query7 = filtroMaior7K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/07")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_07")
+      .start()
+      
+    val query8 = filtroMaior8K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/08")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_08")
+      .start()
+      
+    val query9 = filtroMaior10K.writeStream
+      .outputMode(Append)
+      //.outputMode(Update) // Não pode ser usado com orderBy()
+      .format("csv")
+      .trigger(Trigger.ProcessingTime(2.seconds))
+      .option("path", "/Bigdata/saida_arquivo/09")
+      .option("checkpointLocation", "/Users/usuario/Arquivo-Marco/BigDataScience/chckptcsv/chckptcsv_09")
+      .start()        
+      
     System.out.println("depois do WS")
 
-    /*    val query = filtroQtd.writeStream
-      .outputMode(Complete)
-      .format("console")
-      .start
-      */
     while (scala.io.StdIn.readLine("X + [ENTER] para sair! ").trim.toUpperCase != "X") {
     }
     println("Encerrando...")
